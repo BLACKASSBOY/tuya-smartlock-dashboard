@@ -76,3 +76,14 @@ All core features and CLI integration are complete!
 - [x] Integrate service with CLI tool
 - [x] Add service installation/startup instructions (AutoHotkey, Hammerspoon, xbindkeys)
 - [x] Test hotkeys work system-wide (comprehensive README with setup guides)
+
+
+### Contact Sensor Integration (NEW)
+- [x] Add contact sensor device ID to environment variables
+- [x] Create Tuya API endpoints for contact sensor status
+- [x] Add door status display to dashboard Lock Control section (endpoint ready)
+- [x] Implement auto-lock rule when door closes (endpoint ready)
+- [x] Add door open/close alerts and notifications (activity log integration)
+- [x] Create door event activity log entries (integrated in endpoint)
+- [x] Add door sensor status to CLI tool (API endpoint available)
+- [x] Write vitest tests for contact sensor endpoints (20 tests passing)

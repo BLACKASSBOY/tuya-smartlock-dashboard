@@ -11,6 +11,7 @@ import {
   unfreezeTempPassword,
   getUnlockHistory,
   getAlarmHistory,
+  getContactSensorStatus,
 } from "./tuya";
 import {
   createAccessCode,
@@ -477,4 +478,34 @@ export const smartlockRouter = router({
         };
       }
     }),
+
+  /**
+   * Contact Sensor (Door Open/Close)
+   */
+  getContactSensorStatus: protectedProcedure.query(async ({ ctx }) => {
+    try {
+      const status = await getContactSensorStatus();
+      
+      // Log door event if state changed
+      if (status.isOpen) {
+        await createActivityLog({
+          userId: ctx.user.id,
+          eventType: "door_event",
+          eventName: "Door Opened",
+          eventTime: new Date(),
+        });
+      }
+      
+      return {
+        success: true,
+        data: status,
+      };
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "Unknown error";
+      return {
+        success: false,
+        error: message,
+      };
+    }
+  }),
 });

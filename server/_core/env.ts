@@ -10,5 +10,6 @@ export const ENV = {
   tuyaAccessId: process.env.TUYA_ACCESS_ID ?? "",
   tuyaAccessSecret: process.env.TUYA_ACCESS_SECRET ?? "",
   tuyaDeviceId: process.env.TUYA_DEVICE_ID ?? "",
+  tuyaContactSensorId: process.env.TUYA_CONTACT_SENSOR_ID ?? "",
   tuyaRegion: process.env.TUYA_REGION ?? "us",
 };

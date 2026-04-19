@@ -427,3 +427,59 @@ export async function getAlarmHistory(
 
   return response || [];
 }
+
+interface DoorSensorStatus {
+  isOpen: boolean;
+  battery_level: number;
+  last_change_time?: number;
+}
+
+/**
+ * Get contact sensor (door open/close) status
+ */
+export async function getContactSensorStatus(): Promise<DoorSensorStatus> {
+  const sensorId = ENV.tuyaContactSensorId;
+  if (!sensorId) {
+    throw new Error("Contact sensor ID not configured");
+  }
+
+  const path = `/v1.0/devices/${sensorId}`;
+
+  const response = await makeRequest<Record<string, unknown>>(
+    "GET",
+    path
+  );
+
+  // Extract sensor status from device properties
+  const properties = (response.status || []) as Array<{
+    code: string;
+    value: unknown;
+  }>;
+
+  let isOpen = false;
+  let batteryLevel = 100;
+
+  for (const prop of properties) {
+    // Common property codes for door/window sensors
+    if (
+      prop.code === "door_window_state" ||
+      prop.code === "contact_state" ||
+      prop.code === "open_close"
+    ) {
+      // Typically: 1 = open, 0 = closed
+      isOpen = prop.value === 1 || prop.value === true;
+    }
+    if (
+      prop.code === "battery_percentage" ||
+      prop.code === "battery" ||
+      prop.code === "battery_value"
+    ) {
+      batteryLevel = typeof prop.value === "number" ? prop.value : 100;
+    }
+  }
+
+  return {
+    isOpen,
+    battery_level: batteryLevel,
+  };
+}
