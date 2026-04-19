@@ -7,6 +7,7 @@ import { useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useState } from "react";
 import { toast } from "sonner";
+import { getLoginUrl } from "@/const";
 import LockControlSection from "@/components/LockControlSection";
 import CodeManagerSection from "@/components/CodeManagerSection";
 import ActivityLogSection from "@/components/ActivityLogSection";
@@ -40,8 +41,7 @@ export default function Dashboard() {
           <CardContent>
             <Button
               onClick={() => {
-                const loginUrl = `${window.location.origin}/api/oauth/callback`;
-                window.location.href = loginUrl;
+                window.location.href = getLoginUrl();
               }}
               className="w-full"
             >

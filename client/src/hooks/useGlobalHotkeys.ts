@@ -17,7 +17,7 @@ export function useGlobalHotkeys() {
         try {
           const result = await lockMutation.mutateAsync();
           if (result.success) {
-            toast.success("🔒 Door locked", {
+            toast.success("Door locked", {
               description: "Locked via hotkey (Ctrl+L)",
               duration: 2000,
             });
@@ -35,7 +35,7 @@ export function useGlobalHotkeys() {
         try {
           const result = await unlockMutation.mutateAsync();
           if (result.success) {
-            toast.success("🔓 Door unlocked", {
+            toast.success("Door unlocked", {
               description: "Unlocked via hotkey (Ctrl+U)",
               duration: 2000,
             });
@@ -54,5 +54,5 @@ export function useGlobalHotkeys() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [lockMutation, unlockMutation]);
+  }, []);
 }
