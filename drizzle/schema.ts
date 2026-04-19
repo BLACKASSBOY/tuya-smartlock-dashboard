@@ -25,4 +25,56 @@ export const users = mysqlTable("users", {
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// TODO: Add your tables here
+/**
+ * Temporary access codes for guest access
+ */
+export const accessCodes = mysqlTable("accessCodes", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  passwordId: varchar("passwordId", { length: 64 }).notNull(),
+  name: text("name"),
+  code: text("code"),
+  effectiveTime: timestamp("effectiveTime"),
+  expireTime: timestamp("expireTime"),
+  isFrozen: int("isFrozen").default(0),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type AccessCode = typeof accessCodes.$inferSelect;
+export type InsertAccessCode = typeof accessCodes.$inferInsert;
+
+/**
+ * Auto-lock scheduler rules
+ */
+export const lockSchedules = mysqlTable("lockSchedules", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  name: text("name"),
+  lockTime: varchar("lockTime", { length: 5 }), // HH:mm format
+  daysOfWeek: varchar("daysOfWeek", { length: 20 }), // comma-separated 0-6
+  isEnabled: int("isEnabled").default(1),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
+export type LockSchedule = typeof lockSchedules.$inferSelect;
+export type InsertLockSchedule = typeof lockSchedules.$inferInsert;
+
+/**
+ * Activity log cache for analytics
+ */
+export const activityLogs = mysqlTable("activityLogs", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  eventType: varchar("eventType", { length: 32 }), // unlock, lock, alarm
+  eventName: text("eventName"),
+  eventTime: timestamp("eventTime"),
+  operateId: varchar("operateId", { length: 64 }),
+  operateName: text("operateName"),
+  rawData: text("rawData"), // JSON string for additional data
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+});
+
+export type ActivityLog = typeof activityLogs.$inferSelect;
+export type InsertActivityLog = typeof activityLogs.$inferInsert;
