@@ -11,6 +11,7 @@ import LockControlSection from "@/components/LockControlSection";
 import CodeManagerSection from "@/components/CodeManagerSection";
 import ActivityLogSection from "@/components/ActivityLogSection";
 import SchedulerSection from "@/components/SchedulerSection";
+import AnalyticsSection from "@/components/AnalyticsSection";
 
 export default function Dashboard() {
   const { user, logout, isAuthenticated, loading } = useAuth();
@@ -84,22 +85,26 @@ export default function Dashboard() {
       {/* Main Content */}
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger value="control" className="flex items-center gap-2">
               <Lock className="w-4 h-4" />
-              <span className="hidden sm:inline">Lock Control</span>
+              <span className="hidden sm:inline">Lock</span>
             </TabsTrigger>
             <TabsTrigger value="codes" className="flex items-center gap-2">
               <Zap className="w-4 h-4" />
-              <span className="hidden sm:inline">Access Codes</span>
+              <span className="hidden sm:inline">Codes</span>
             </TabsTrigger>
             <TabsTrigger value="activity" className="flex items-center gap-2">
               <LogOut className="w-4 h-4" />
               <span className="hidden sm:inline">Activity</span>
             </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <Zap className="w-4 h-4" />
+              <span className="hidden sm:inline">Analytics</span>
+            </TabsTrigger>
             <TabsTrigger value="scheduler" className="flex items-center gap-2">
               <Zap className="w-4 h-4" />
-              <span className="hidden sm:inline">Scheduler</span>
+              <span className="hidden sm:inline">Schedule</span>
             </TabsTrigger>
           </TabsList>
 
@@ -113,6 +118,10 @@ export default function Dashboard() {
 
           <TabsContent value="activity" className="space-y-4">
             <ActivityLogSection />
+          </TabsContent>
+
+          <TabsContent value="analytics" className="space-y-4">
+            <AnalyticsSection />
           </TabsContent>
 
           <TabsContent value="scheduler" className="space-y-4">
