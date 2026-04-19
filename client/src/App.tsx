@@ -5,6 +5,7 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Dashboard from "./pages/Dashboard";
+import { useGlobalHotkeys } from "./hooks/useGlobalHotkeys";
 
 function Router() {
   // make sure to consider if you need authentication for certain routes
@@ -24,6 +25,9 @@ function Router() {
 // - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
 
 function App() {
+  // Initialize global hotkeys for lock/unlock
+  useGlobalHotkeys();
+
   return (
     <ErrorBoundary>
       <ThemeProvider

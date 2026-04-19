@@ -78,3 +78,20 @@ export const activityLogs = mysqlTable("activityLogs", {
 
 export type ActivityLog = typeof activityLogs.$inferSelect;
 export type InsertActivityLog = typeof activityLogs.$inferInsert;
+
+/**
+ * CLI authentication tokens for lock-control tool
+ */
+export const cliTokens = mysqlTable("cliTokens", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull(),
+  token: varchar("token", { length: 255 }).notNull().unique(),
+  name: text("name"), // e.g., "My Laptop", "Work PC"
+  isActive: int("isActive").default(1),
+  lastUsedAt: timestamp("lastUsedAt"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  expiresAt: timestamp("expiresAt"), // Optional expiration
+});
+
+export type CliToken = typeof cliTokens.$inferSelect;
+export type InsertCliToken = typeof cliTokens.$inferInsert;

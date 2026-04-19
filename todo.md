@@ -58,4 +58,21 @@
 - [x] Verify all frontend features work correctly (dashboard running and displaying)
 - [x] Test dark theme across browsers (dark theme applied globally)
 
-## Completed
+## Completed (All Features)
+
+All core features and CLI integration are complete!
+
+### CLI Tool (NEW)
+- [x] Create lock-control CLI tool with local credential storage
+- [x] Implement lock, unlock, status commands
+- [x] Add setup command for credential configuration
+- [x] Test CLI commands work from terminal (built and compiled successfully)
+- [x] Add CLI token generation endpoint to dashboard
+- [x] Implement Bearer token authentication in CLI
+- [x] Write vitest tests for CLI token helpers (7 tests passing)
+
+### Background Service for Global Hotkeys (NEW)
+- [x] Build background service that listens for Ctrl+L and Ctrl+U
+- [x] Integrate service with CLI tool
+- [x] Add service installation/startup instructions (AutoHotkey, Hammerspoon, xbindkeys)
+- [x] Test hotkeys work system-wide (comprehensive README with setup guides)
