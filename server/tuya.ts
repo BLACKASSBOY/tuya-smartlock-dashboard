@@ -115,24 +115,38 @@ async function getAccessToken(): Promise<string> {
 
   const url = `https://openapi.tuya${getRegionSuffix()}/v1.0/token?grant_type=1`;
 
-  const response = await fetch(url, {
-    method,
-    headers: {
-      client_id: ENV.tuyaAccessId,
-      sign: signature,
-      sign_method: "HMAC-SHA256",
-      t: timestamp.toString(),
-      nonce,
-    },
-  });
+  let response;
+  try {
+    response = await fetch(url, {
+      method,
+      headers: {
+        client_id: ENV.tuyaAccessId,
+        sign: signature,
+        sign_method: "HMAC-SHA256",
+        t: timestamp.toString(),
+        nonce,
+      },
+    });
 
-  if (!response.ok) {
-    throw new Error(`Failed to get Tuya access token: ${response.statusText}`);
+    if (!response.ok) {
+      console.error(`[Tuya] Failed to get access token. Status: ${response.status} ${response.statusText}`);
+      throw new Error(`Failed to get Tuya access token: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error(`[Tuya] Fetch error:`, error);
+    throw error;
   }
 
-  const data = (await response.json()) as TuyaApiResponse<TuyaAccessToken>;
+  let data;
+  try {
+    data = (await response!.json()) as TuyaApiResponse<TuyaAccessToken>;
+  } catch (error) {
+    console.error(`[Tuya] Failed to parse JSON response:`, error);
+    throw error;
+  }
 
   if (!data.success || !data.result) {
+    console.error(`[Tuya] API error response:`, data);
     throw new Error(
       `Tuya API error: ${data.msg || "Failed to get access token"}`
     );
