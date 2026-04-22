@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { protectedProcedure, router } from "./_core/trpc";
+import { publicProcedure, router } from "./_core/trpc";
 import {
   getLockStatus,
   lockDoor,
@@ -36,7 +36,7 @@ export const smartlockRouter = router({
   /**
    * Lock Control
    */
-  getLockStatus: protectedProcedure.query(async () => {
+  getLockStatus: publicProcedure.query(async () => {
     try {
       const status = await getLockStatus();
       return {
@@ -63,13 +63,13 @@ export const smartlockRouter = router({
     }
   }),
 
-  lockDoor: protectedProcedure.mutation(async ({ ctx }) => {
+  lockDoor: publicProcedure.mutation(async ({ ctx }) => {
     try {
       await lockDoor();
 
       // Log the action
       await createActivityLog({
-        userId: ctx.user.id,
+        userId: 1,
         eventType: "lock",
         eventName: "Door locked",
         eventTime: new Date(),
@@ -88,13 +88,13 @@ export const smartlockRouter = router({
     }
   }),
 
-  unlockDoor: protectedProcedure.mutation(async ({ ctx }) => {
+  unlockDoor: publicProcedure.mutation(async ({ ctx }) => {
     try {
       await unlockDoor();
 
       // Log the action
       await createActivityLog({
-        userId: ctx.user.id,
+        userId: 1,
         eventType: "unlock",
         eventName: "Door unlocked",
         eventTime: new Date(),
@@ -116,7 +116,7 @@ export const smartlockRouter = router({
   /**
    * Access Code Management
    */
-  createAccessCode: protectedProcedure
+  createAccessCode: publicProcedure
     .input(
       z.object({
         name: z.string().min(1).max(100),
@@ -134,7 +134,7 @@ export const smartlockRouter = router({
 
         // Save to database
         await createAccessCode({
-          userId: ctx.user.id,
+          userId: 1,
           passwordId: tempPassword.password_id,
           name: input.name,
           code: tempPassword.password,
@@ -163,9 +163,9 @@ export const smartlockRouter = router({
       }
     }),
 
-  getAccessCodes: protectedProcedure.query(async ({ ctx }) => {
+  getAccessCodes: publicProcedure.query(async ({ ctx }) => {
     try {
-      const codes = await getAccessCodesByUser(ctx.user.id);
+      const codes = await getAccessCodesByUser(1);
       return {
         success: true,
         data: codes,
@@ -179,12 +179,12 @@ export const smartlockRouter = router({
     }
   }),
 
-  deleteAccessCode: protectedProcedure
+  deleteAccessCode: publicProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
       try {
         const code = await getAccessCodeById(input.id);
-        if (!code || code.userId !== ctx.user.id) {
+        if (!code || code.userId !== 1) {
           return {
             success: false,
             error: "Access code not found",
@@ -210,12 +210,12 @@ export const smartlockRouter = router({
       }
     }),
 
-  freezeAccessCode: protectedProcedure
+  freezeAccessCode: publicProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
       try {
         const code = await getAccessCodeById(input.id);
-        if (!code || code.userId !== ctx.user.id) {
+        if (!code || code.userId !== 1) {
           return {
             success: false,
             error: "Access code not found",
@@ -241,12 +241,12 @@ export const smartlockRouter = router({
       }
     }),
 
-  unfreezeAccessCode: protectedProcedure
+  unfreezeAccessCode: publicProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
       try {
         const code = await getAccessCodeById(input.id);
-        if (!code || code.userId !== ctx.user.id) {
+        if (!code || code.userId !== 1) {
           return {
             success: false,
             error: "Access code not found",
@@ -275,7 +275,7 @@ export const smartlockRouter = router({
   /**
    * Activity Log Management
    */
-  getActivityLogs: protectedProcedure
+  getActivityLogs: publicProcedure
     .input(
       z.object({
         startTime: z.date().optional(),
@@ -285,7 +285,7 @@ export const smartlockRouter = router({
     .query(async ({ ctx, input }) => {
       try {
         const logs = await getActivityLogsByUser(
-          ctx.user.id,
+          1,
           input.startTime,
           input.endTime
         );
@@ -302,13 +302,13 @@ export const smartlockRouter = router({
       }
     }),
 
-  syncActivityLogs: protectedProcedure.mutation(async ({ ctx }) => {
+  syncActivityLogs: publicProcedure.mutation(async ({ ctx }) => {
     try {
       // Fetch unlock history from Tuya
       const unlockRecords = await getUnlockHistory();
       for (const record of unlockRecords) {
         await createActivityLog({
-          userId: ctx.user.id,
+          userId: 1,
           eventType: "unlock",
           eventName: record.operate_name || "Unlock",
           eventTime: record.operate_time
@@ -323,7 +323,7 @@ export const smartlockRouter = router({
       const alarmRecords = await getAlarmHistory();
       for (const record of alarmRecords) {
         await createActivityLog({
-          userId: ctx.user.id,
+          userId: 1,
           eventType: "alarm",
           eventName: record.alarm_name || "Alarm",
           eventTime: record.time
@@ -348,7 +348,7 @@ export const smartlockRouter = router({
   /**
    * Lock Schedule Management
    */
-  createLockSchedule: protectedProcedure
+  createLockSchedule: publicProcedure
     .input(
       z.object({
         name: z.string().min(1).max(100),
@@ -359,7 +359,7 @@ export const smartlockRouter = router({
     .mutation(async ({ ctx, input }) => {
       try {
         await createLockSchedule({
-          userId: ctx.user.id,
+          userId: 1,
           name: input.name,
           lockTime: input.lockTime,
           daysOfWeek: input.daysOfWeek,
@@ -382,9 +382,9 @@ export const smartlockRouter = router({
       }
     }),
 
-  getLockSchedules: protectedProcedure.query(async ({ ctx }) => {
+  getLockSchedules: publicProcedure.query(async ({ ctx }) => {
     try {
-      const schedules = await getLockSchedulesByUser(ctx.user.id);
+      const schedules = await getLockSchedulesByUser(1);
       return {
         success: true,
         data: schedules,
@@ -398,7 +398,7 @@ export const smartlockRouter = router({
     }
   }),
 
-  updateLockSchedule: protectedProcedure
+  updateLockSchedule: publicProcedure
     .input(
       z.object({
         id: z.number(),
@@ -410,7 +410,7 @@ export const smartlockRouter = router({
     .mutation(async ({ ctx, input }) => {
       try {
         const schedule = await getLockScheduleById(input.id);
-        if (!schedule || schedule.userId !== ctx.user.id) {
+        if (!schedule || schedule.userId !== 1) {
           return {
             success: false,
             error: "Schedule not found",
@@ -436,12 +436,12 @@ export const smartlockRouter = router({
       }
     }),
 
-  deleteLockSchedule: protectedProcedure
+  deleteLockSchedule: publicProcedure
     .input(z.object({ id: z.number() }))
     .mutation(async ({ ctx, input }) => {
       try {
         const schedule = await getLockScheduleById(input.id);
-        if (!schedule || schedule.userId !== ctx.user.id) {
+        if (!schedule || schedule.userId !== 1) {
           return {
             success: false,
             error: "Schedule not found",
@@ -463,12 +463,12 @@ export const smartlockRouter = router({
       }
     }),
 
-  toggleLockSchedule: protectedProcedure
+  toggleLockSchedule: publicProcedure
     .input(z.object({ id: z.number(), isEnabled: z.boolean() }))
     .mutation(async ({ ctx, input }) => {
       try {
         const schedule = await getLockScheduleById(input.id);
-        if (!schedule || schedule.userId !== ctx.user.id) {
+        if (!schedule || schedule.userId !== 1) {
           return {
             success: false,
             error: "Schedule not found",
@@ -493,14 +493,14 @@ export const smartlockRouter = router({
   /**
    * Contact Sensor (Door Open/Close)
    */
-  getContactSensorStatus: protectedProcedure.query(async ({ ctx }) => {
+  getContactSensorStatus: publicProcedure.query(async ({ ctx }) => {
     try {
       const status = await getContactSensorStatus();
       
       // Log door event if state changed
       if (status.isOpen) {
         await createActivityLog({
-          userId: ctx.user.id,
+          userId: 1,
           eventType: "door_event",
           eventName: "Door Opened",
           eventTime: new Date(),
