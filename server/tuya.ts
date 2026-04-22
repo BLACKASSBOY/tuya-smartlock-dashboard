@@ -162,7 +162,7 @@ async function getAccessToken(): Promise<string> {
 function getRegionSuffix(): string {
   const region = ENV.tuyaRegion || "us";
   const regionMap: Record<string, string> = {
-    us: ".com",
+    us: "us.com",
     "us-e": ".com",
     eu: ".eu.com",
     "eu-w": ".eu.com",
