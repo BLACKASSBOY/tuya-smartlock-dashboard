@@ -1,5 +1,12 @@
 [build]
-builder = "nixpacks"
+builder = "dockerfile"
+
+[build.args]
+VITE_APP_ID = "${VITE_APP_ID}"
+VITE_APP_LOGO = "${VITE_APP_LOGO}"
+VITE_APP_TITLE = "${VITE_APP_TITLE}"
+VITE_OAUTH_PORTAL_URL = "${VITE_OAUTH_PORTAL_URL}"
+VITE_FRONTEND_FORGE_API_URL = "${VITE_FRONTEND_FORGE_API_URL}"
 
 [deploy]
 startCommand = "node dist/index.js"
