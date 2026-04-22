@@ -30,7 +30,7 @@ export default function Dashboard() {
     );
   }
 
-  if (!isAuthenticated) {
+  if (false) {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
         <Card className="w-full max-w-md">
