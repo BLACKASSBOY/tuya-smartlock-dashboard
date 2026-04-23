@@ -7,11 +7,11 @@ const getEnv = () => {
     appId: process.env.VITE_APP_ID || "",
     cookieSecret: process.env.JWT_SECRET || "dev-secret-key",
     databaseUrl: process.env.DATABASE_URL || "mysql://localhost/dev",
-    oAuthServerUrl: process.env.OAUTH_SERVER_URL || "https://api.manus.im",
-    ownerOpenId: process.env.OWNER_OPEN_ID || "",
+
+
     isProduction: process.env.NODE_ENV === "production",
-    forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL || "https://forge.manus.ai",
-    forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY || "",
+
+
     tuyaAccessId: process.env.TUYA_ACCESS_ID || "",
     tuyaAccessSecret: process.env.TUYA_ACCESS_SECRET || "",
     tuyaDeviceId: process.env.TUYA_DEVICE_ID || "",
